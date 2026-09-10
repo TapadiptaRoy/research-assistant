@@ -1,1 +1,8 @@
 # Python dependencies go here
+langchain
+langchain-anthropic
+langchain-community
+python-dotenv
+arxiv
+xmltodict
+requests
