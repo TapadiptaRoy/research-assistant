@@ -8,6 +8,7 @@ load_dotenv()
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 SEMANTIC_SCHOLAR_API_KEY = os.getenv("SEMANTIC_SCHOLAR_API_KEY")
 NCBI_API_KEY = os.getenv("NCBI_API_KEY")
+TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 
 if ANTHROPIC_API_KEY is None:
     raise ValueError("ANTHROPIC_API_KEY is missing — check your .env file")
