@@ -12,30 +12,37 @@ def _rebuild_abstract(inverted_index):
     return " ".join(words)
 
 def search_openalex(query: str, max_results: int = 3):
-    url = "https://api.openalex.org/works"
-    params = {
-        "search": query,
-        "per_page": max_results
-    }
-    response = requests.get(url, params=params)
-    data = response.json()
-
     documents = []
-    for paper in data.get("results", []):
-        abstract = _rebuild_abstract(paper.get("abstract_inverted_index"))
-        authors = [a["author"]["display_name"] for a in paper.get("authorships", [])]
+    try:
+        url = "https://api.openalex.org/works"
+        params = {
+            "search": query,
+            "per_page": max_results
+        }
+        response = requests.get(url, params=params, timeout=10)
+        data = response.json()
 
-        doc = Document(
-            page_content=abstract,
-            metadata={
-                "title": paper.get("title", ""),
-                "authors": authors,
-                "published": paper.get("publication_year", ""),
-                "url": paper.get("id", ""),
-                "source": "openalex"
-            }
-        )
-        documents.append(doc)
+        if "results" not in data:
+            print(f"OpenAlex API error: {data}")
+            return documents
+
+        for paper in data["results"]:
+            abstract = _rebuild_abstract(paper.get("abstract_inverted_index"))
+            authors = [a["author"]["display_name"] for a in paper.get("authorships", [])]
+
+            doc = Document(
+                page_content=abstract,
+                metadata={
+                    "title": paper.get("title") or "",
+                    "authors": authors,
+                    "published": paper.get("publication_year", ""),
+                    "url": paper.get("id", ""),
+                    "source": "openalex"
+                }
+            )
+            documents.append(doc)
+    except Exception as e:
+        print(f"OpenAlex search failed: {e}")
 
     return documents
 

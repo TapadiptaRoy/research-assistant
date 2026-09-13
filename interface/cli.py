@@ -1,10 +1,11 @@
 # Command-line entry point for interacting with the assistant
-# Command-line entry point for interacting with the assistant
 
 from graph.workflow import build_graph
 
 def main():
     graph = build_graph()
+    history = []
+
     print("Multi-Source Research Assistant")
     print("Type your question, or 'quit' to exit.\n")
 
@@ -18,7 +19,10 @@ def main():
         if not query:
             continue
 
-        result = graph.invoke({"query": query})
+        result = graph.invoke({"query": query, "history": history})
+
+        history = result["history"]
+
         print("\nAssistant:\n")
         print(result["answer"])
         print("\n" + "-" * 60 + "\n")

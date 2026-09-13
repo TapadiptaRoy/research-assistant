@@ -9,3 +9,4 @@ class ResearchState(TypedDict):
     documents: List[Document]
     answer: str
     retries: int
+    history: List[dict]

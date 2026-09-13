@@ -11,7 +11,8 @@ from graph.state import ResearchState
 
 
 def route_node(state: ResearchState) -> dict:
-    return {"sources_to_use": route_query(state["query"])}
+    history = state.get("history", [])
+    return {"sources_to_use": route_query(state["query"], history=history)}
 
 
 def retrieve_node(state: ResearchState) -> dict:
@@ -58,8 +59,15 @@ def check_documents(state: ResearchState) -> str:
 
 
 def synthesize_node(state: ResearchState) -> dict:
-    answer = synthesize(state["query"], state["documents"])
-    return {"answer": answer}
+    history = state.get("history", [])
+    answer = synthesize(state["query"], state["documents"], history=history)
+
+    new_history = history + [{"question": state["query"], "answer": answer}]
+
+    return {
+        "answer": answer,
+        "history": new_history
+    }
 
 
 def build_graph():
@@ -86,6 +94,6 @@ def build_graph():
 
 if __name__ == "__main__":
     graph = build_graph()
-    result = graph.invoke({"query": "What is quantum computing?"})
+    result = graph.invoke({"query": "What is quantum computing?", "history": []})
     print(f"Retries used: {result['retries']}")
     print(result["answer"])
