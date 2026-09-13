@@ -6,3 +6,4 @@ python-dotenv
 arxiv
 xmltodict
 requests
+langgraph
