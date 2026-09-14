@@ -2,7 +2,7 @@
 
 🔗 **[Live Demo](https://research-assistant-wbdc.onrender.com/)**
 
-![Research Assistant Screenshot](./docs/screenshot.png)
+
 
 A research assistant that answers questions by pulling from academic papers (arXiv, PubMed, OpenAlex) and current web results, then synthesizes everything into one coherent, cited answer. Built with LangChain and LangGraph.
 
