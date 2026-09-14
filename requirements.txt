@@ -7,3 +7,4 @@ arxiv
 xmltodict
 requests
 langgraph
+pytest  
