@@ -2,11 +2,12 @@
 langchain
 langchain-anthropic
 langchain-community
+langchain-tavily
 python-dotenv
 arxiv
 xmltodict
 requests
 langgraph
-pytest  
+pytest
 fastapi
 uvicorn
