@@ -1,6 +1,8 @@
 # Multi-Source Research Assistant
-"# research-assistant" 
-# Multi-Source Research Assistant
+
+🔗 **[Live Demo](https://research-assistant-wbdc.onrender.com/)**
+
+![Research Assistant Screenshot](./docs/screenshot.png)
 
 A research assistant that answers questions by pulling from academic papers (arXiv, PubMed, OpenAlex) and current web results, then synthesizes everything into one coherent, cited answer. Built with LangChain and LangGraph.
 
@@ -10,6 +12,8 @@ Ask it something, and it will:
 3. If results come back thin, automatically broaden the search and retry
 4. Write one answer that cites which source backs each claim
 5. Remember the conversation so you can ask natural follow-ups
+
+> Note: the live demo runs on a free-tier instance that spins down after ~15 minutes of inactivity — the first request after idling can take 30–60 seconds to wake up.
 
 ## Why this exists
 
@@ -74,6 +78,8 @@ research-assistant/
 │   └── synthesizer.py       # Merges documents into one cited answer
 ├── tests/
 │   └── test_sources.py      # Unit tests for source normalization logic
+├── docs/
+│   └── screenshot.png       # README screenshot
 └── config.py                 # Centralized env var loading
 ```
 
@@ -155,11 +161,20 @@ python -m interface.cli
 pytest tests/
 ```
 
+## Deployment
+
+Deployed on [Render](https://render.com) as a single web service:
+
+- **Build command:** `pip install -r requirements.txt`
+- **Start command:** `python -m uvicorn backend.app:app --host 0.0.0.0 --port $PORT`
+- **Environment variables:** `ANTHROPIC_API_KEY`, `TAVILY_API_KEY` set in Render's dashboard (never committed — `.env` is gitignored)
+
 ## Design decisions worth knowing
 
 - **Semantic Scholar was dropped in favor of OpenAlex** — Semantic Scholar's free-tier rate limits (429 errors) made it impractical for iterative development. OpenAlex covers similar ground with no auth requirement and no rate-limit friction.
 - **Retry logic is capped at 1 attempt** — the conditional loop in the graph always terminates: after one retry with a broadened search, the pipeline proceeds with whatever it has rather than looping indefinitely.
 - **The router uses the LLM, not keyword rules** — deciding which sources fit a question is a judgment call ("what's the latest on X" implies web + maybe arXiv; "explain the mechanism of X" implies academic sources), which keyword matching handles poorly.
+- **Every source function fails independently** — each is wrapped in its own try/except, so one API being down (this happened repeatedly with arXiv rate limits during development) never crashes the whole pipeline.
 
 ## Known limitations
 
