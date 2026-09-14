@@ -8,3 +8,5 @@ xmltodict
 requests
 langgraph
 pytest  
+fastapi
+uvicorn
